@@ -3,28 +3,27 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Protoss Zealot Voice Simulator</title>
+    <title>Springfield Voice Modulator</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Luckiest+Guy&family=Nunito:wght@400;700;900&display=swap');
 
         :root {
-            --protoss-blue: #00e5ff;
-            --protoss-gold: #ffd700;
-            --protoss-dark: #0a0f1a;
-            --protoss-glow: 0 0 15px rgba(0, 229, 255, 0.7);
-            --protoss-gold-glow: 0 0 15px rgba(255, 215, 0, 0.5);
+            --simp-yellow: #FFD90F;
+            --simp-blue: #70D1FE;
+            --simp-pink: #E472A1;
+            --simp-green: #47B34A;
+            --simp-brown: #C17F5B;
         }
 
         body {
-            background-color: #05080f;
+            background-color: var(--simp-blue);
             background-image: 
-                radial-gradient(circle at 50% 50%, #0d1b2a 0%, #05080f 100%),
-                linear-gradient(0deg, rgba(0, 229, 255, 0.03) 1px, transparent 1px),
-                linear-gradient(90deg, rgba(0, 229, 255, 0.03) 1px, transparent 1px);
-            background-size: 100% 100%, 30px 30px, 30px 30px;
-            color: var(--protoss-blue);
-            font-family: 'Orbitron', sans-serif;
+                radial-gradient(circle at 20% 20%, rgba(255,255,255,0.4) 10%, transparent 20%),
+                radial-gradient(circle at 80% 40%, rgba(255,255,255,0.4) 15%, transparent 25%),
+                radial-gradient(circle at 40% 80%, rgba(255,255,255,0.4) 10%, transparent 20%);
+            color: #000;
+            font-family: 'Nunito', sans-serif;
             min-height: 100vh;
             display: flex;
             flex-direction: column;
@@ -33,183 +32,166 @@
             overflow-x: hidden;
         }
 
+        h1, h2, h3, .comic-text {
+            font-family: 'Luckiest Guy', cursive;
+            letter-spacing: 2px;
+        }
+
         .panel {
-            background: rgba(10, 15, 26, 0.85);
-            border: 2px solid var(--protoss-gold);
-            box-shadow: var(--protoss-gold-glow), inset 0 0 20px rgba(255, 215, 0, 0.1);
-            backdrop-filter: blur(10px);
+            background: #fff;
+            border: 6px solid #000;
+            border-radius: 20px;
+            box-shadow: 10px 10px 0 rgba(0, 0, 0, 0.2);
             position: relative;
         }
 
-        .panel::before, .panel::after {
-            content: '';
-            position: absolute;
-            width: 20px;
-            height: 20px;
-            border: 2px solid var(--protoss-blue);
-            box-shadow: var(--protoss-glow);
-        }
-
-        .panel::before { top: -2px; left: -2px; border-right: none; border-bottom: none; }
-        .panel::after { bottom: -2px; right: -2px; border-left: none; border-top: none; }
-
         textarea {
-            background: rgba(0, 30, 50, 0.6);
-            border: 1px solid var(--protoss-blue);
-            color: #fff;
-            font-family: 'Orbitron', sans-serif;
-            text-shadow: 0 0 5px var(--protoss-blue);
+            background: #f4f4f4;
+            border: 4px solid #000;
+            border-radius: 12px;
+            color: #000;
+            font-family: 'Nunito', sans-serif;
+            font-weight: 700;
+            font-size: 1.1rem;
             resize: none;
-            transition: all 0.3s ease;
+            transition: all 0.2s ease;
+            box-shadow: inset 4px 4px 0 rgba(0,0,0,0.05);
         }
 
         textarea:focus {
             outline: none;
-            box-shadow: inset 0 0 15px rgba(0, 229, 255, 0.3), 0 0 10px rgba(0, 229, 255, 0.5);
-            border-color: #fff;
+            background: #fff;
+            border-color: var(--simp-blue);
         }
 
         select {
-            background: rgba(0, 30, 50, 0.8);
-            border: 1px solid var(--protoss-gold);
-            color: var(--protoss-gold);
-            font-family: 'Orbitron', sans-serif;
+            background: #fff;
+            border: 4px solid #000;
+            border-radius: 12px;
+            color: #000;
+            font-family: 'Luckiest Guy', cursive;
+            font-size: 1.2rem;
             outline: none;
             cursor: pointer;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            box-shadow: inset 0 0 10px rgba(255, 215, 0, 0.1);
-        }
-
-        select option {
-            background: var(--protoss-dark);
-            color: var(--protoss-gold);
+            box-shadow: 4px 4px 0 rgba(0,0,0,0.1);
         }
 
         input[type="password"] {
-            background: rgba(0, 30, 50, 0.8);
-            border: 1px solid var(--protoss-gold);
-            color: #fff;
-            font-family: 'Orbitron', sans-serif;
+            background: #f4f4f4;
+            border: 4px solid #000;
+            border-radius: 12px;
+            color: #000;
+            font-weight: bold;
             outline: none;
-            box-shadow: inset 0 0 10px rgba(255, 215, 0, 0.1);
-            transition: all 0.3s ease;
+            box-shadow: inset 4px 4px 0 rgba(0,0,0,0.05);
+            transition: all 0.2s ease;
         }
 
         input[type="password"]:focus {
-            border-color: var(--protoss-blue);
-            box-shadow: inset 0 0 15px rgba(0, 229, 255, 0.3);
+            background: #fff;
+            border-color: var(--simp-blue);
         }
 
         .btn {
-            background: linear-gradient(180deg, rgba(0, 229, 255, 0.2) 0%, rgba(0, 100, 150, 0.5) 100%);
-            border: 1px solid var(--protoss-blue);
-            color: var(--protoss-blue);
-            text-transform: uppercase;
-            letter-spacing: 2px;
-            font-weight: bold;
-            transition: all 0.2s;
+            background: #fff;
+            border: 4px solid #000;
+            border-radius: 12px;
+            color: #000;
+            font-family: 'Luckiest Guy', cursive;
+            font-size: 1.2rem;
+            letter-spacing: 1px;
+            transition: all 0.1s;
             position: relative;
-            overflow: hidden;
+            box-shadow: 4px 4px 0 #000;
+            cursor: pointer;
         }
 
         .btn:hover:not(:disabled) {
-            background: linear-gradient(180deg, rgba(0, 229, 255, 0.4) 0%, rgba(0, 150, 200, 0.7) 100%);
-            box-shadow: var(--protoss-glow);
-            color: #fff;
-            text-shadow: 0 0 8px #fff;
-            transform: scale(1.02);
+            transform: translate(-2px, -2px);
+            box-shadow: 6px 6px 0 #000;
         }
         
         .btn:active:not(:disabled) {
-            transform: scale(0.98);
+            transform: translate(4px, 4px);
+            box-shadow: 0px 0px 0 #000;
         }
 
         .btn:disabled {
-            opacity: 0.5;
+            background: #ccc !important;
+            color: #666;
+            box-shadow: 4px 4px 0 #666;
             cursor: not-allowed;
-            border-color: #555;
-            color: #555;
+            transform: none;
         }
 
-        .btn-gold {
-            border-color: var(--protoss-gold);
-            color: var(--protoss-gold);
-            background: linear-gradient(180deg, rgba(255, 215, 0, 0.1) 0%, rgba(150, 120, 0, 0.4) 100%);
-        }
+        .btn-pink { background: var(--simp-pink); color: #fff; }
+        .btn-yellow { background: var(--simp-yellow); }
+        .btn-green { background: var(--simp-green); color: #fff; }
 
-        .btn-gold:hover:not(:disabled) {
-            background: linear-gradient(180deg, rgba(255, 215, 0, 0.3) 0%, rgba(200, 150, 0, 0.6) 100%);
-            box-shadow: var(--protoss-gold-glow);
-            color: #fff;
-        }
-
-        .crystal {
-            width: 80px;
-            height: 120px;
-            background: linear-gradient(135deg, #00ffff 0%, #0055ff 100%);
-            clip-path: polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%);
-            box-shadow: 0 0 30px var(--protoss-blue);
-            animation: pulse 3s infinite alternate;
-            margin: 0 auto;
-        }
-
-        .crystal-container {
+        /* The Cartoon Donut CSS */
+        .donut-container {
             position: relative;
-            width: 120px;
+            width: 100px;
+            height: 100px;
             margin: 0 auto 20px auto;
+            animation: spin 6s linear infinite;
         }
 
-        .crystal-ring {
+        .donut {
+            width: 100px;
+            height: 100px;
+            background-color: #D4A373; /* Dough */
+            border-radius: 50%;
+            border: 5px solid #000;
+            position: relative;
+            box-shadow: inset -5px -5px 0 rgba(0,0,0,0.2);
+            overflow: hidden;
+        }
+
+        .frosting {
+            position: absolute;
+            top: -10px;
+            left: -10px;
+            right: -10px;
+            bottom: 20px;
+            background-color: var(--simp-pink);
+            border-radius: 50%;
+            border-bottom: 5px solid #000;
+        }
+
+        .donut::after {
+            /* The Donut Hole */
+            content: "";
             position: absolute;
             top: 50%;
             left: 50%;
             transform: translate(-50%, -50%);
-            width: 120px;
-            height: 40px;
-            border: 2px solid var(--protoss-gold);
+            width: 30px;
+            height: 30px;
+            background-color: var(--simp-blue);
             border-radius: 50%;
-            box-shadow: var(--protoss-gold-glow);
-            animation: spin 8s linear infinite;
+            border: 5px solid #000;
+            box-shadow: inset 3px 3px 0 rgba(0,0,0,0.2);
+            z-index: 10;
         }
 
-        .status-text {
-            font-size: 0.8rem;
-            letter-spacing: 3px;
-            opacity: 0.7;
+        .sprinkle {
+            position: absolute;
+            width: 4px;
+            height: 12px;
+            border-radius: 2px;
+            border: 1px solid #000;
+            z-index: 5;
         }
 
-        @keyframes pulse {
-            0% { filter: brightness(0.8) drop-shadow(0 0 10px #00ffff); transform: translateY(0); }
-            100% { filter: brightness(1.5) drop-shadow(0 0 40px #00ffff); transform: translateY(-5px); }
-        }
+        @keyframes spin { 100% { transform: rotate(360deg); } }
+        @keyframes bounce { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-10px); } }
 
-        @keyframes spin {
-            0% { transform: translate(-50%, -50%) rotateX(70deg) rotateZ(0deg); }
-            100% { transform: translate(-50%, -50%) rotateX(70deg) rotateZ(360deg); }
-        }
-
-        @keyframes typing {
-            from { width: 0; }
-            to { width: 100%; }
-        }
-
-        .title-typewriter {
-            overflow: hidden;
-            white-space: nowrap;
-            margin: 0 auto;
-            border-right: 2px solid var(--protoss-gold);
-            animation: typing 2s steps(40, end), blink-caret .75s step-end infinite;
-        }
-
-        @keyframes blink-caret {
-            from, to { border-color: transparent }
-            50% { border-color: var(--protoss-gold); }
-        }
+        .title-bounce { animation: bounce 2s infinite ease-in-out; }
 
         .loader {
-            border: 3px solid rgba(0, 229, 255, 0.2);
-            border-top: 3px solid var(--protoss-blue);
+            border: 4px solid rgba(0, 0, 0, 0.1);
+            border-top: 4px solid #000;
             border-radius: 50%;
             width: 24px;
             height: 24px;
@@ -218,125 +200,140 @@
             margin: 0 auto;
         }
 
-        @keyframes spin-loader {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
-        }
+        @keyframes spin-loader { 100% { transform: rotate(360deg); } }
     </style>
 </head>
 <body class="p-4 md:p-8">
 
-    <div class="crystal-container">
-        <div class="crystal"></div>
-        <div class="crystal-ring"></div>
+    <div class="donut-container">
+        <div class="donut">
+            <div class="frosting"></div>
+            <!-- Sprinkles -->
+            <div class="sprinkle" style="top: 20px; left: 30px; background: #00f; transform: rotate(45deg);"></div>
+            <div class="sprinkle" style="top: 30px; left: 70px; background: #0f0; transform: rotate(-30deg);"></div>
+            <div class="sprinkle" style="top: 60px; left: 20px; background: #ff0; transform: rotate(70deg);"></div>
+            <div class="sprinkle" style="top: 70px; left: 80px; background: #f00; transform: rotate(-10deg);"></div>
+            <div class="sprinkle" style="top: 15px; left: 55px; background: #fff; transform: rotate(15deg);"></div>
+        </div>
     </div>
 
-    <div class="w-full max-w-3xl panel p-8 rounded-sm text-center">
-        <h1 class="text-2xl md:text-4xl text-[var(--protoss-gold)] font-black mb-2 tracking-widest title-typewriter inline-block uppercase">Khala Connection Link</h1>
-        <p class="status-text mb-8 text-[var(--protoss-blue)]">Establishing telepathic conduit...</p>
+    <div class="w-full max-w-3xl panel p-6 md:p-10 text-center">
+        <h1 class="text-4xl md:text-5xl text-[var(--simp-yellow)] font-black mb-2 title-bounce" style="-webkit-text-stroke: 2px #000; text-shadow: 4px 4px 0 #000;">Springfield Voice Modulator</h1>
+        <p class="mb-8 font-bold text-lg">Turn your text into cartoon gold!</p>
 
-        <div class="mb-6 text-left p-4 border border-[var(--protoss-gold)] bg-[rgba(255,215,0,0.05)] rounded-sm">
-            <label class="text-sm tracking-widest opacity-80 uppercase text-[var(--protoss-gold)]">Khala Authentication (API Key):</label>
+        <div class="mb-6 text-left p-4 bg-[var(--simp-yellow)] border-4 border-black rounded-xl box-shadow-cartoon">
+            <label class="comic-text text-xl">API Key (The Secret Sauce):</label>
             <div class="flex flex-col md:flex-row gap-2 mt-2">
-                <input type="password" id="apiKeyInput" class="w-full p-3 rounded-sm text-sm flex-1" placeholder="Paste your Gemini API Key here...">
-                <button id="saveKeyBtn" class="btn btn-gold px-6 py-2 rounded-sm text-sm whitespace-nowrap flex items-center justify-center gap-2">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"></path><polyline points="17 21 17 13 7 13 7 21"></polyline><polyline points="7 3 7 8 15 8"></polyline></svg>
-                    Save Key
-                </button>
+                <input type="password" id="apiKeyInput" class="w-full p-3 text-lg flex-1" placeholder="Paste Gemini API Key here...">
+                <button id="saveKeyBtn" class="btn btn-green px-6 py-2">Save Key!</button>
             </div>
-            <div id="keyStatus" class="mt-3 p-3 bg-[rgba(0,255,0,0.1)] border border-green-500 text-green-400 text-sm hidden rounded-sm flex items-center justify-center gap-2 font-bold tracking-wider">
-                <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
-                KHALA CONNECTION ESTABLISHED! KEY SAVED.
+            <div id="keyStatus" class="mt-3 p-3 bg-white border-4 border-black text-black hidden rounded-xl flex items-center justify-center gap-2 font-bold">
+                Excellent! Key saved locally.
             </div>
-            <p class="text-xs mt-3 opacity-80">Get a free key from <a href="https://aistudio.google.com/app/apikey" target="_blank" class="underline text-[var(--protoss-blue)] hover:text-white">Google AI Studio</a>. (Saved securely in your browser).</p>
         </div>
 
-        <div class="mb-4 flex flex-col md:flex-row gap-4 items-center justify-between text-left">
-            <label class="text-sm tracking-widest opacity-80 uppercase">Target Persona:</label>
-            <select id="characterSelect" class="p-2 rounded-sm text-lg w-full md:w-auto flex-1 transition-all hover:border-[var(--protoss-blue)] focus:border-[var(--protoss-blue)]">
-                <option value="zealot">Zealot (Standard)</option>
-                <option value="zeratul">Zeratul (Dark Prelate)</option>
-                <option value="artanis">Artanis (Hierarch)</option>
-                <option value="alarak">Alarak (Highlord)</option>
-                <option value="highTemplar">High Templar</option>
+        <div class="mb-6 flex flex-col md:flex-row gap-4 items-center justify-between text-left">
+            <label class="comic-text text-2xl">Who's Talking?</label>
+            <select id="characterSelect" class="p-3 w-full md:w-auto flex-1">
+                <option value="homer">Homer S.</option>
+                <option value="moleman">Hans Moleman</option>
+                <option value="burns">Mr. Burns</option>
+                <option value="comicguy">Comic Book Guy</option>
+                <option value="krusty">Krusty</option>
+                <option value="otto">Otto Mann</option>
+                <option value="milhouse">Milhouse</option>
             </select>
         </div>
 
         <div class="mb-6 text-left">
-            <label class="block text-sm tracking-widest mb-2 opacity-80 uppercase">Enter Thoughts for Transmission:</label>
-            <textarea id="textInput" class="w-full h-32 p-4 rounded-sm text-lg" placeholder="My life for Aiur..."></textarea>
+            <label class="block comic-text text-xl mb-2">Write something funny:</label>
+            <textarea id="textInput" class="w-full h-32 p-4 text-xl" placeholder="Mmm... forbidden donut..."></textarea>
         </div>
 
         <div class="flex flex-col md:flex-row gap-4 justify-center items-center">
-            <button id="dictateBtn" class="btn w-full md:w-auto px-6 py-3 rounded-sm flex items-center justify-center gap-2">
-                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2a3 3 0 0 0-3 3v7a3 3 0 0 0 6 0V5a3 3 0 0 0-3-3z"></path><path d="M19 10v2a7 7 0 0 1-14 0v-2"></path><line x1="12" y1="19" x2="12" y2="22"></line></svg>
-                Commune (Voice to Text)
+            <button id="dictateBtn" class="btn w-full md:w-auto px-6 py-3 flex items-center justify-center gap-2">
+                🎤 Dictate
             </button>
 
-            <button id="speakBtn" class="btn btn-gold w-full md:w-auto px-8 py-3 rounded-sm text-lg flex items-center justify-center gap-2">
-                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon><path d="M15.54 8.46a5 5 0 0 1 0 7.07"></path><path d="M19.07 4.93a10 10 0 0 1 0 14.14"></path></svg>
-                Project Thoughts
+            <button id="speakBtn" class="btn btn-pink w-full md:w-auto px-8 py-3 text-2xl flex items-center justify-center gap-2">
+                ▶ Speak, Man!
             </button>
         </div>
 
-        <div id="loadingIndicator" class="mt-6 text-sm tracking-widest hidden flex-col items-center">
+        <div id="loadingIndicator" class="mt-6 font-bold hidden flex-col items-center comic-text text-xl">
             <div class="loader mb-2" style="display: block;"></div>
-            Channeling Psionic Energy...
+            Warming up the tubes...
         </div>
 
-        <div id="downloadSection" class="mt-6 hidden flex-col items-center border-t border-[var(--protoss-blue)] pt-6">
-            <p class="text-sm mb-3 text-[var(--protoss-gold)] font-bold tracking-widest uppercase">Transmission Archived</p>
-            <a id="downloadLink" class="btn px-6 py-2 rounded-sm text-sm flex items-center justify-center gap-2 w-full md:w-auto" download="protoss_transmission.wav">
-                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
-                Download Audio File
+        <div id="downloadSection" class="mt-6 hidden flex-col items-center border-t-4 border-black pt-6">
+            <p class="comic-text text-xl mb-3">Audio Saved!</p>
+            <a id="downloadLink" class="btn btn-yellow px-6 py-2 flex items-center justify-center gap-2 w-full md:w-auto" download="springfield_audio.wav">
+                💾 Download .WAV
             </a>
         </div>
 
-        <div id="errorMsg" class="mt-4 text-red-500 text-sm hidden"></div>
+        <div id="errorMsg" class="mt-4 p-4 bg-red-400 border-4 border-black font-bold hidden rounded-xl"></div>
     </div>
 
     <script>
-        // --- Protoss Character Profiles ---
+        // --- Simpsons Character Profiles ---
+        // We use EQ to completely change how the AI voices sound natively.
         const characterProfiles = {
-            zealot: {
-                voice: "Fenrir",
-                prompt: "Speak in a slow, deep, resonant, and serious tone: ",
-                playbackRate: 0.82,
-                eqLow: { freq: 200, gain: 5 },
-                eqHigh: { freq: 3000, gain: -3 },
-                delays: [{ time: 0.035, gain: 0.5 }, { time: 0.070, gain: 0.25 }]
+            homer: {
+                voice: "Orus",
+                prompt: "Speak extremely fast in a dopey, lazy, hungry, comedic, and slightly whiny middle-aged man voice: ",
+                playbackRate: 0.92, // Dropped pitch for dad-bod depth, but the "fast" prompt keeps the pace normal
+                eqLow: { freq: 250, gain: 8 }, // Heavy chest resonance
+                eqHigh: { freq: 4000, gain: -2 }, 
+                delays: []
             },
-            zeratul: {
-                voice: "Fenrir",
-                prompt: "Speak in a very slow, raspy, dark, breathless, and mysterious whisper: ",
-                playbackRate: 0.72,
-                eqLow: { freq: 150, gain: 8 },
-                eqHigh: { freq: 4000, gain: -5 },
-                delays: [{ time: 0.050, gain: 0.6 }, { time: 0.100, gain: 0.3 }]
+            moleman: {
+                voice: "Puck",
+                prompt: "Speak extremely fast in a shaky, weak, frail, pathetic, and raspy elderly croak: ",
+                playbackRate: 0.94, // Pitched down for age
+                eqLow: { freq: 300, gain: -15 }, // Strip away ALL bass to make it thin and reedy
+                eqHigh: { freq: 2500, gain: 8 }, // Extreme nasal boost
+                delays: []
             },
-            artanis: {
+            burns: {
+                voice: "Fenrir",
+                prompt: "Speak extremely fast in an aristocratic, sinister, raspy, ancient, and evil billionaire voice: ",
+                playbackRate: 0.94, 
+                eqLow: { freq: 200, gain: -12 }, // Thin out the old man voice
+                eqHigh: { freq: 5000, gain: 14 }, // Maximum boost to high frequencies for rasp/hiss
+                delays: []
+            },
+            comicguy: {
+                voice: "Charon",
+                prompt: "Speak extremely fast in a sarcastic, arrogant, stuffy, nasal, and condescending overweight nerd voice: ",
+                playbackRate: 0.90, // Deep, weighty pitch
+                eqLow: { freq: 200, gain: 4 }, 
+                eqHigh: { freq: 1200, gain: 15 }, // Massive boost to the 1.2kHz mid-range for maximum nasal "honk"
+                delays: []
+            },
+            krusty: {
+                voice: "Orus",
+                prompt: "Speak normally in a manic, loud, harsh, raspy, burnt-out, and gravelly clown voice: ",
+                playbackRate: 1.10, // Fast, manic, pitched slightly up
+                eqLow: { freq: 250, gain: 4 },
+                eqHigh: { freq: 3500, gain: 10 }, // Very harsh and gravelly high-end
+                delays: []
+            },
+            otto: {
                 voice: "Zephyr",
-                prompt: "Speak in a noble, commanding, clear, and heroic tone: ",
-                playbackRate: 0.88,
-                eqLow: { freq: 250, gain: 3 },
-                eqHigh: { freq: 4000, gain: 2 },
-                delays: [{ time: 0.030, gain: 0.3 }]
+                prompt: "Speak extremely fast in a raspy, relaxed, spaced-out, surfer dude rocker voice: ",
+                playbackRate: 0.92, // Pitched down for that relaxed, older rocker tone
+                eqLow: { freq: 200, gain: 5 }, // Slight bass boost for chestiness
+                eqHigh: { freq: 3000, gain: 4 }, // Emphasize the rasp
+                delays: []
             },
-            alarak: {
-                voice: "Fenrir",
-                prompt: "Speak in an arrogant, sinister, sharp, and condescending tone: ",
-                playbackRate: 0.85,
-                eqLow: { freq: 200, gain: 2 },
-                eqHigh: { freq: 3500, gain: 4 },
-                delays: [{ time: 0.025, gain: 0.4 }]
-            },
-            highTemplar: {
+            milhouse: {
                 voice: "Kore",
-                prompt: "Speak in a ghostly, ethereal, smooth, and telepathic voice: ",
-                playbackRate: 0.95,
-                eqLow: { freq: 300, gain: -2 },
-                eqHigh: { freq: 5000, gain: 5 },
-                delays: [{ time: 0.080, gain: 0.5 }, { time: 0.160, gain: 0.3 }]
+                prompt: "Speak extremely slowly and clearly in a whiny, high-pitched, nasal, nerdy young boy voice: ",
+                playbackRate: 1.35, // Drastically pitched UP for the kid voice, counter-acted by the "slow" prompt!
+                eqLow: { freq: 200, gain: -8 }, // Remove adult bass
+                eqHigh: { freq: 2000, gain: 12 }, // High nasal whine
+                delays: []
             }
         };
 
@@ -357,11 +354,11 @@
         let audioContext;
         let currentDownloadUrl = null;
 
-        // Load saved API key
+        // Load saved API key (keeping the old variable name so you don't have to re-enter it!)
         const savedKey = localStorage.getItem('khala_api_key');
         if (savedKey) {
             apiKeyInput.value = savedKey;
-            saveKeyBtn.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"></path><polyline points="17 21 17 13 7 13 7 21"></polyline><polyline points="7 3 7 8 15 8"></polyline></svg> Update Key`;
+            saveKeyBtn.innerText = "Key Updated!";
         }
 
         // Save key button logic
@@ -369,23 +366,17 @@
             const key = apiKeyInput.value.trim();
             if (key) {
                 localStorage.setItem('khala_api_key', key);
-                keyStatus.style.display = 'flex'; // Show green confirmation box
-                saveKeyBtn.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg> Saved!`;
-                
-                // Hide the green confirmation after 4 seconds
+                keyStatus.style.display = 'flex';
+                saveKeyBtn.innerText = "Saved!";
                 setTimeout(() => {
                     keyStatus.style.display = 'none';
-                    saveKeyBtn.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"></path><polyline points="17 21 17 13 7 13 7 21"></polyline><polyline points="7 3 7 8 15 8"></polyline></svg> Update Key`;
-                }, 4000);
+                    saveKeyBtn.innerText = "Update Key";
+                }, 3000);
             }
         });
 
-        // Allow pressing Enter to save key
         apiKeyInput.addEventListener('keypress', (e) => {
-            if (e.key === 'Enter') {
-                e.preventDefault();
-                saveKeyBtn.click();
-            }
+            if (e.key === 'Enter') { e.preventDefault(); saveKeyBtn.click(); }
         });
 
         function initAudioContext() {
@@ -475,11 +466,10 @@
         }
 
         // --- Offline Audio Processing & Rendering ---
-        async function renderProtossAudio(floatArray, sampleRate, profile) {
+        async function renderCartoonAudio(floatArray, sampleRate, profile) {
             const baseDuration = floatArray.length / sampleRate;
             const rateAdjustedDuration = baseDuration / profile.playbackRate;
-            const maxDelay = profile.delays.length > 0 ? Math.max(...profile.delays.map(d => d.time)) : 0;
-            const totalDuration = rateAdjustedDuration + maxDelay + 0.5; // add tail
+            const totalDuration = rateAdjustedDuration + 0.5; // add tiny tail just in case
             
             const offlineCtx = new (window.OfflineAudioContext || window.webkitOfflineAudioContext)(1, Math.ceil(totalDuration * sampleRate), sampleRate);
             
@@ -506,19 +496,8 @@
             source.connect(biquadFilter);
             biquadFilter.connect(highShelf);
             highShelf.connect(masterGain);
-
-            profile.delays.forEach(d => {
-                const delayNode = offlineCtx.createDelay(1.0);
-                delayNode.delayTime.value = d.time;
-                const delayGain = offlineCtx.createGain();
-                delayGain.gain.value = d.gain;
-                
-                highShelf.connect(delayNode);
-                delayNode.connect(delayGain);
-                delayGain.connect(masterGain);
-            });
-
             masterGain.connect(offlineCtx.destination);
+            
             source.start(0);
 
             return await offlineCtx.startRendering();
@@ -534,7 +513,7 @@
             
             downloadLink.href = currentDownloadUrl;
             const charId = characterSelect.value;
-            downloadLink.download = `${charId}_transmission.wav`;
+            downloadLink.download = `${charId}_audio.wav`;
             downloadSection.style.display = 'flex';
 
             // Play Audio
@@ -544,7 +523,7 @@
 
             source.onended = () => {
                 speakBtn.disabled = false;
-                speakBtn.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon><path d="M15.54 8.46a5 5 0 0 1 0 7.07"></path><path d="M19.07 4.93a10 10 0 0 1 0 14.14"></path></svg> Project Thoughts`;
+                speakBtn.innerHTML = `▶ Speak, Man!`;
             };
 
             source.start(0);
@@ -560,7 +539,7 @@
             errorMsg.style.display = 'none';
 
             if (!userApiKey) {
-                errorMsg.textContent = "Authentication required. Please provide a Khala API Key above.";
+                errorMsg.innerHTML = "D'oh! You forgot the API Key up top!";
                 errorMsg.style.display = 'block';
                 return;
             }
@@ -612,43 +591,42 @@
                     
                     speakBtn.innerHTML = `Synthesizing...`;
                     
-                    // Render Audio Offline to get a single file buffer
-                    const renderedBuffer = await renderProtossAudio(floatArray, sampleRate, profile);
+                    // Render Audio Offline
+                    const renderedBuffer = await renderCartoonAudio(floatArray, sampleRate, profile);
                     
                     loadingIndicator.style.display = 'none';
-                    speakBtn.innerHTML = `Projecting...`;
+                    speakBtn.innerHTML = `Playing...`;
                     
                     playAndProvideDownload(renderedBuffer);
 
                 } else {
-                    throw new Error("Invalid response from psychic network.");
+                    throw new Error("Invalid response from the server.");
                 }
 
             } catch (err) {
                 console.error(err);
                 loadingIndicator.style.display = 'none';
                 speakBtn.disabled = false;
-                speakBtn.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon><path d="M15.54 8.46a5 5 0 0 1 0 7.07"></path><path d="M19.07 4.93a10 10 0 0 1 0 14.14"></path></svg> Project Thoughts`;
-                errorMsg.textContent = "Connection to the Khala failed: " + err.message;
+                speakBtn.innerHTML = `▶ Speak, Man!`;
+                errorMsg.innerHTML = "Ay caramba! Connection failed: " + err.message;
                 errorMsg.style.display = 'block';
             }
         });
 
         // --- Speech to Text (Voice Dictation) Logic ---
-        // Setup Speech Recognition (WebKit prefixed for Chrome/Safari)
         const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
         let recognition;
 
         if (SpeechRecognition) {
             recognition = new SpeechRecognition();
-            recognition.continuous = false; // Stop after one phrase
-            recognition.interimResults = true; // Show text as you speak
+            recognition.continuous = false;
+            recognition.interimResults = true;
             recognition.lang = 'en-US';
 
             recognition.onstart = function() {
                 dictateBtn.classList.add('animate-pulse');
-                dictateBtn.innerHTML = `<span class="loader" style="display:block; width:16px; height:16px; border-width:2px;"></span> Communing...`;
-                textInput.placeholder = "Listening to your thoughts...";
+                dictateBtn.innerHTML = `Listening...`;
+                textInput.placeholder = "Listening to your voice...";
             };
 
             recognition.onresult = function(event) {
@@ -663,9 +641,7 @@
                     }
                 }
 
-                // Append final text or show interim
                 if (finalTranscript) {
-                    // Capitalize first letter and add period if missing
                     finalTranscript = finalTranscript.trim();
                     finalTranscript = finalTranscript.charAt(0).toUpperCase() + finalTranscript.slice(1);
                     if (!finalTranscript.match(/[.!?]$/)) finalTranscript += '.';
@@ -678,13 +654,13 @@
             recognition.onerror = function(event) {
                 console.error("Speech recognition error", event.error);
                 resetDictateBtn();
-                errorMsg.textContent = "Failed to hear your thoughts. Ensure microphone access is granted.";
+                errorMsg.innerHTML = "Microphone failed. Did you grant access?";
                 errorMsg.style.display = 'block';
             };
 
             recognition.onend = function() {
                 resetDictateBtn();
-                textInput.placeholder = "My life for Aiur...";
+                textInput.placeholder = "Mmm... forbidden donut...";
             };
         } else {
             dictateBtn.disabled = true;
@@ -693,7 +669,7 @@
 
         function resetDictateBtn() {
             dictateBtn.classList.remove('animate-pulse');
-            dictateBtn.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2a3 3 0 0 0-3 3v7a3 3 0 0 0 6 0V5a3 3 0 0 0-3-3z"></path><path d="M19 10v2a7 7 0 0 1-14 0v-2"></path><line x1="12" y1="19" x2="12" y2="22"></line></svg> Commune (Voice to Text)`;
+            dictateBtn.innerHTML = `🎤 Dictate`;
         }
 
         dictateBtn.addEventListener('click', () => {
@@ -702,7 +678,6 @@
                 try {
                     recognition.start();
                 } catch (e) {
-                    // Already started
                     recognition.stop();
                 }
             }
