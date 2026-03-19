@@ -237,7 +237,11 @@
 
         <div class="mb-6 text-left p-4 border border-[var(--protoss-gold)] bg-[rgba(255,215,0,0.05)] rounded-sm">
             <label class="text-sm tracking-widest opacity-80 uppercase text-[var(--protoss-gold)]">Khala Authentication (API Key):</label>
-            <input type="password" id="apiKeyInput" class="w-full p-3 mt-2 rounded-sm text-sm" placeholder="Paste your Gemini API Key here...">
+            <div class="flex gap-2 mt-2">
+                <input type="password" id="apiKeyInput" class="w-full p-3 rounded-sm text-sm" placeholder="Paste your Gemini API Key here...">
+                <button id="saveKeyBtn" class="btn px-4 py-2 rounded-sm text-sm whitespace-nowrap">Link</button>
+            </div>
+            <p id="keyStatus" class="text-xs mt-1 text-[var(--protoss-blue)] hidden">Link established. Key saved locally.</p>
             <p class="text-xs mt-2 opacity-80">Get a free key from <a href="https://aistudio.google.com/app/apikey" target="_blank" class="underline text-[var(--protoss-blue)] hover:text-white">Google AI Studio</a>. (Saved securely in your browser).</p>
         </div>
 
@@ -340,6 +344,8 @@
         const errorMsg = document.getElementById('errorMsg');
         const downloadSection = document.getElementById('downloadSection');
         const downloadLink = document.getElementById('downloadLink');
+        const saveKeyBtn = document.getElementById('saveKeyBtn');
+        const keyStatus = document.getElementById('keyStatus');
 
         // --- Web Audio API Context ---
         let audioContext;
@@ -348,6 +354,24 @@
         // Load saved API key
         const savedKey = localStorage.getItem('khala_api_key');
         if (savedKey) apiKeyInput.value = savedKey;
+
+        // Save key button logic
+        saveKeyBtn.addEventListener('click', () => {
+            const key = apiKeyInput.value.trim();
+            if (key) {
+                localStorage.setItem('khala_api_key', key);
+                keyStatus.style.display = 'block';
+                setTimeout(() => keyStatus.style.display = 'none', 3000);
+            }
+        });
+
+        // Allow pressing Enter to save key
+        apiKeyInput.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') {
+                e.preventDefault();
+                saveKeyBtn.click();
+            }
+        });
 
         function initAudioContext() {
             if (!audioContext) {
