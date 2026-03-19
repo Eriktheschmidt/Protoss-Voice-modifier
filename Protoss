@@ -1,0 +1,639 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Protoss Zealot Voice Simulator</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&display=swap');
+
+        :root {
+            --protoss-blue: #00e5ff;
+            --protoss-gold: #ffd700;
+            --protoss-dark: #0a0f1a;
+            --protoss-glow: 0 0 15px rgba(0, 229, 255, 0.7);
+            --protoss-gold-glow: 0 0 15px rgba(255, 215, 0, 0.5);
+        }
+
+        body {
+            background-color: #05080f;
+            background-image: 
+                radial-gradient(circle at 50% 50%, #0d1b2a 0%, #05080f 100%),
+                linear-gradient(0deg, rgba(0, 229, 255, 0.03) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(0, 229, 255, 0.03) 1px, transparent 1px);
+            background-size: 100% 100%, 30px 30px, 30px 30px;
+            color: var(--protoss-blue);
+            font-family: 'Orbitron', sans-serif;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            overflow-x: hidden;
+        }
+
+        .panel {
+            background: rgba(10, 15, 26, 0.85);
+            border: 2px solid var(--protoss-gold);
+            box-shadow: var(--protoss-gold-glow), inset 0 0 20px rgba(255, 215, 0, 0.1);
+            backdrop-filter: blur(10px);
+            position: relative;
+        }
+
+        .panel::before, .panel::after {
+            content: '';
+            position: absolute;
+            width: 20px;
+            height: 20px;
+            border: 2px solid var(--protoss-blue);
+            box-shadow: var(--protoss-glow);
+        }
+
+        .panel::before { top: -2px; left: -2px; border-right: none; border-bottom: none; }
+        .panel::after { bottom: -2px; right: -2px; border-left: none; border-top: none; }
+
+        textarea {
+            background: rgba(0, 30, 50, 0.6);
+            border: 1px solid var(--protoss-blue);
+            color: #fff;
+            font-family: 'Orbitron', sans-serif;
+            text-shadow: 0 0 5px var(--protoss-blue);
+            resize: none;
+            transition: all 0.3s ease;
+        }
+
+        textarea:focus {
+            outline: none;
+            box-shadow: inset 0 0 15px rgba(0, 229, 255, 0.3), 0 0 10px rgba(0, 229, 255, 0.5);
+            border-color: #fff;
+        }
+
+        select {
+            background: rgba(0, 30, 50, 0.8);
+            border: 1px solid var(--protoss-gold);
+            color: var(--protoss-gold);
+            font-family: 'Orbitron', sans-serif;
+            outline: none;
+            cursor: pointer;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            box-shadow: inset 0 0 10px rgba(255, 215, 0, 0.1);
+        }
+
+        select option {
+            background: var(--protoss-dark);
+            color: var(--protoss-gold);
+        }
+
+        .btn {
+            background: linear-gradient(180deg, rgba(0, 229, 255, 0.2) 0%, rgba(0, 100, 150, 0.5) 100%);
+            border: 1px solid var(--protoss-blue);
+            color: var(--protoss-blue);
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            font-weight: bold;
+            transition: all 0.2s;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .btn:hover:not(:disabled) {
+            background: linear-gradient(180deg, rgba(0, 229, 255, 0.4) 0%, rgba(0, 150, 200, 0.7) 100%);
+            box-shadow: var(--protoss-glow);
+            color: #fff;
+            text-shadow: 0 0 8px #fff;
+            transform: scale(1.02);
+        }
+        
+        .btn:active:not(:disabled) {
+            transform: scale(0.98);
+        }
+
+        .btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            border-color: #555;
+            color: #555;
+        }
+
+        .btn-gold {
+            border-color: var(--protoss-gold);
+            color: var(--protoss-gold);
+            background: linear-gradient(180deg, rgba(255, 215, 0, 0.1) 0%, rgba(150, 120, 0, 0.4) 100%);
+        }
+
+        .btn-gold:hover:not(:disabled) {
+            background: linear-gradient(180deg, rgba(255, 215, 0, 0.3) 0%, rgba(200, 150, 0, 0.6) 100%);
+            box-shadow: var(--protoss-gold-glow);
+            color: #fff;
+        }
+
+        .crystal {
+            width: 80px;
+            height: 120px;
+            background: linear-gradient(135deg, #00ffff 0%, #0055ff 100%);
+            clip-path: polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%);
+            box-shadow: 0 0 30px var(--protoss-blue);
+            animation: pulse 3s infinite alternate;
+            margin: 0 auto;
+        }
+
+        .crystal-container {
+            position: relative;
+            width: 120px;
+            margin: 0 auto 20px auto;
+        }
+
+        .crystal-ring {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 120px;
+            height: 40px;
+            border: 2px solid var(--protoss-gold);
+            border-radius: 50%;
+            box-shadow: var(--protoss-gold-glow);
+            animation: spin 8s linear infinite;
+        }
+
+        .status-text {
+            font-size: 0.8rem;
+            letter-spacing: 3px;
+            opacity: 0.7;
+        }
+
+        @keyframes pulse {
+            0% { filter: brightness(0.8) drop-shadow(0 0 10px #00ffff); transform: translateY(0); }
+            100% { filter: brightness(1.5) drop-shadow(0 0 40px #00ffff); transform: translateY(-5px); }
+        }
+
+        @keyframes spin {
+            0% { transform: translate(-50%, -50%) rotateX(70deg) rotateZ(0deg); }
+            100% { transform: translate(-50%, -50%) rotateX(70deg) rotateZ(360deg); }
+        }
+
+        @keyframes typing {
+            from { width: 0; }
+            to { width: 100%; }
+        }
+
+        .title-typewriter {
+            overflow: hidden;
+            white-space: nowrap;
+            margin: 0 auto;
+            border-right: 2px solid var(--protoss-gold);
+            animation: typing 2s steps(40, end), blink-caret .75s step-end infinite;
+        }
+
+        @keyframes blink-caret {
+            from, to { border-color: transparent }
+            50% { border-color: var(--protoss-gold); }
+        }
+
+        .loader {
+            border: 3px solid rgba(0, 229, 255, 0.2);
+            border-top: 3px solid var(--protoss-blue);
+            border-radius: 50%;
+            width: 24px;
+            height: 24px;
+            animation: spin-loader 1s linear infinite;
+            display: none;
+            margin: 0 auto;
+        }
+
+        @keyframes spin-loader {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+    </style>
+</head>
+<body class="p-4 md:p-8">
+
+    <div class="crystal-container">
+        <div class="crystal"></div>
+        <div class="crystal-ring"></div>
+    </div>
+
+    <div class="w-full max-w-3xl panel p-8 rounded-sm text-center">
+        <h1 class="text-2xl md:text-4xl text-[var(--protoss-gold)] font-black mb-2 tracking-widest title-typewriter inline-block uppercase">Khala Connection Link</h1>
+        <p class="status-text mb-8 text-[var(--protoss-blue)]">Establishing telepathic conduit...</p>
+
+        <div class="mb-4 flex flex-col md:flex-row gap-4 items-center justify-between text-left">
+            <label class="text-sm tracking-widest opacity-80 uppercase">Target Persona:</label>
+            <select id="characterSelect" class="p-2 rounded-sm text-lg w-full md:w-auto flex-1 transition-all hover:border-[var(--protoss-blue)] focus:border-[var(--protoss-blue)]">
+                <option value="zealot">Zealot (Standard)</option>
+                <option value="zeratul">Zeratul (Dark Prelate)</option>
+                <option value="artanis">Artanis (Hierarch)</option>
+                <option value="alarak">Alarak (Highlord)</option>
+                <option value="highTemplar">High Templar</option>
+            </select>
+        </div>
+
+        <div class="mb-6 text-left">
+            <label class="block text-sm tracking-widest mb-2 opacity-80 uppercase">Enter Thoughts for Transmission:</label>
+            <textarea id="textInput" class="w-full h-32 p-4 rounded-sm text-lg" placeholder="My life for Aiur..."></textarea>
+        </div>
+
+        <div class="flex flex-col md:flex-row gap-4 justify-center items-center">
+            <button id="dictateBtn" class="btn w-full md:w-auto px-6 py-3 rounded-sm flex items-center justify-center gap-2">
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2a3 3 0 0 0-3 3v7a3 3 0 0 0 6 0V5a3 3 0 0 0-3-3z"></path><path d="M19 10v2a7 7 0 0 1-14 0v-2"></path><line x1="12" y1="19" x2="12" y2="22"></line></svg>
+                Commune (Voice to Text)
+            </button>
+
+            <button id="speakBtn" class="btn btn-gold w-full md:w-auto px-8 py-3 rounded-sm text-lg flex items-center justify-center gap-2">
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon><path d="M15.54 8.46a5 5 0 0 1 0 7.07"></path><path d="M19.07 4.93a10 10 0 0 1 0 14.14"></path></svg>
+                Project Thoughts
+            </button>
+        </div>
+
+        <div id="loadingIndicator" class="mt-6 text-sm tracking-widest hidden flex-col items-center">
+            <div class="loader mb-2" style="display: block;"></div>
+            Channeling Psionic Energy...
+        </div>
+
+        <div id="downloadSection" class="mt-6 hidden flex-col items-center border-t border-[var(--protoss-blue)] pt-6">
+            <p class="text-sm mb-3 text-[var(--protoss-gold)] font-bold tracking-widest uppercase">Transmission Archived</p>
+            <a id="downloadLink" class="btn px-6 py-2 rounded-sm text-sm flex items-center justify-center gap-2 w-full md:w-auto" download="protoss_transmission.wav">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
+                Download Audio File
+            </a>
+        </div>
+
+        <div id="errorMsg" class="mt-4 text-red-500 text-sm hidden"></div>
+    </div>
+
+    <script>
+        // --- Configuration ---
+        const apiKey = ""; // API key is injected by the environment
+        const ttsUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-tts:generateContent?key=${apiKey}`;
+        
+        // --- Protoss Character Profiles ---
+        const characterProfiles = {
+            zealot: {
+                voice: "Fenrir",
+                prompt: "Speak in a slow, deep, resonant, and serious tone: ",
+                playbackRate: 0.82,
+                eqLow: { freq: 200, gain: 5 },
+                eqHigh: { freq: 3000, gain: -3 },
+                delays: [{ time: 0.035, gain: 0.5 }, { time: 0.070, gain: 0.25 }]
+            },
+            zeratul: {
+                voice: "Fenrir",
+                prompt: "Speak in a very slow, raspy, dark, breathless, and mysterious whisper: ",
+                playbackRate: 0.72,
+                eqLow: { freq: 150, gain: 8 },
+                eqHigh: { freq: 4000, gain: -5 },
+                delays: [{ time: 0.050, gain: 0.6 }, { time: 0.100, gain: 0.3 }]
+            },
+            artanis: {
+                voice: "Zephyr",
+                prompt: "Speak in a noble, commanding, clear, and heroic tone: ",
+                playbackRate: 0.88,
+                eqLow: { freq: 250, gain: 3 },
+                eqHigh: { freq: 4000, gain: 2 },
+                delays: [{ time: 0.030, gain: 0.3 }]
+            },
+            alarak: {
+                voice: "Fenrir",
+                prompt: "Speak in an arrogant, sinister, sharp, and condescending tone: ",
+                playbackRate: 0.85,
+                eqLow: { freq: 200, gain: 2 },
+                eqHigh: { freq: 3500, gain: 4 },
+                delays: [{ time: 0.025, gain: 0.4 }]
+            },
+            highTemplar: {
+                voice: "Kore",
+                prompt: "Speak in a ghostly, ethereal, smooth, and telepathic voice: ",
+                playbackRate: 0.95,
+                eqLow: { freq: 300, gain: -2 },
+                eqHigh: { freq: 5000, gain: 5 },
+                delays: [{ time: 0.080, gain: 0.5 }, { time: 0.160, gain: 0.3 }]
+            }
+        };
+
+        // --- UI Elements ---
+        const textInput = document.getElementById('textInput');
+        const dictateBtn = document.getElementById('dictateBtn');
+        const speakBtn = document.getElementById('speakBtn');
+        const characterSelect = document.getElementById('characterSelect');
+        const loadingIndicator = document.getElementById('loadingIndicator');
+        const errorMsg = document.getElementById('errorMsg');
+        const downloadSection = document.getElementById('downloadSection');
+        const downloadLink = document.getElementById('downloadLink');
+
+        // --- Web Audio API Context ---
+        let audioContext;
+        let currentDownloadUrl = null;
+
+        function initAudioContext() {
+            if (!audioContext) {
+                audioContext = new (window.AudioContext || window.webkitAudioContext)();
+            }
+            if (audioContext.state === 'suspended') {
+                audioContext.resume();
+            }
+        }
+
+        // --- Utilities ---
+        function base64ToFloat32Array(base64) {
+            const binaryString = window.atob(base64);
+            const bytes = new Uint8Array(binaryString.length);
+            for (let i = 0; i < binaryString.length; i++) {
+                bytes[i] = binaryString.charCodeAt(i);
+            }
+            const dataView = new DataView(bytes.buffer);
+            const floatArray = new Float32Array(bytes.length / 2);
+            for (let i = 0; i < floatArray.length; i++) {
+                floatArray[i] = dataView.getInt16(i * 2, true) / 32768.0;
+            }
+            return floatArray;
+        }
+
+        async function fetchWithBackoff(url, options, maxRetries = 5) {
+            const delays = [1000, 2000, 4000, 8000, 16000];
+            for (let i = 0; i < maxRetries; i++) {
+                try {
+                    const response = await fetch(url, options);
+                    if (!response.ok) {
+                        const errText = await response.text();
+                        throw new Error(`API Error ${response.status}: ${errText}`);
+                    }
+                    return await response.json();
+                } catch (error) {
+                    if (i === maxRetries - 1) throw error;
+                    await new Promise(resolve => setTimeout(resolve, delays[i]));
+                }
+            }
+        }
+
+        function audioBufferToWav(buffer) {
+            const numChannels = buffer.numberOfChannels;
+            const sampleRate = buffer.sampleRate;
+            const format = 1; // PCM
+            const bitDepth = 16;
+            
+            const result = new Float32Array(buffer.length * numChannels);
+            for (let channel = 0; channel < numChannels; channel++) {
+                const channelData = buffer.getChannelData(channel);
+                for (let i = 0; i < buffer.length; i++) {
+                    result[i * numChannels + channel] = channelData[i];
+                }
+            }
+
+            const dataLength = result.length * (bitDepth / 8);
+            const bufferLength = 44 + dataLength;
+            const dataView = new DataView(new ArrayBuffer(bufferLength));
+
+            const writeString = (view, offset, string) => {
+                for (let i = 0; i < string.length; i++) view.setUint8(offset + i, string.charCodeAt(i));
+            };
+
+            writeString(dataView, 0, 'RIFF');
+            dataView.setUint32(4, 36 + dataLength, true);
+            writeString(dataView, 8, 'WAVE');
+            writeString(dataView, 12, 'fmt ');
+            dataView.setUint32(16, 16, true);
+            dataView.setUint16(20, format, true);
+            dataView.setUint16(22, numChannels, true);
+            dataView.setUint32(24, sampleRate, true);
+            dataView.setUint32(28, sampleRate * numChannels * (bitDepth / 8), true);
+            dataView.setUint16(32, numChannels * (bitDepth / 8), true);
+            dataView.setUint16(34, bitDepth, true);
+            writeString(dataView, 36, 'data');
+            dataView.setUint32(40, dataLength, true);
+
+            let offset = 44;
+            for (let i = 0; i < result.length; i++, offset += 2) {
+                let s = Math.max(-1, Math.min(1, result[i]));
+                dataView.setInt16(offset, s < 0 ? s * 0x8000 : s * 0x7FFF, true);
+            }
+
+            return new Blob([dataView], { type: 'audio/wav' });
+        }
+
+        // --- Offline Audio Processing & Rendering ---
+        async function renderProtossAudio(floatArray, sampleRate, profile) {
+            const baseDuration = floatArray.length / sampleRate;
+            const rateAdjustedDuration = baseDuration / profile.playbackRate;
+            const maxDelay = profile.delays.length > 0 ? Math.max(...profile.delays.map(d => d.time)) : 0;
+            const totalDuration = rateAdjustedDuration + maxDelay + 0.5; // add tail
+            
+            const offlineCtx = new (window.OfflineAudioContext || window.webkitOfflineAudioContext)(1, Math.ceil(totalDuration * sampleRate), sampleRate);
+            
+            const audioBuffer = offlineCtx.createBuffer(1, floatArray.length, sampleRate);
+            audioBuffer.getChannelData(0).set(floatArray);
+
+            const source = offlineCtx.createBufferSource();
+            source.buffer = audioBuffer;
+            source.playbackRate.value = profile.playbackRate;
+
+            const biquadFilter = offlineCtx.createBiquadFilter();
+            biquadFilter.type = "lowshelf";
+            biquadFilter.frequency.value = profile.eqLow.freq;
+            biquadFilter.gain.value = profile.eqLow.gain;
+
+            const highShelf = offlineCtx.createBiquadFilter();
+            highShelf.type = "highshelf";
+            highShelf.frequency.value = profile.eqHigh.freq;
+            highShelf.gain.value = profile.eqHigh.gain;
+
+            const masterGain = offlineCtx.createGain();
+            masterGain.gain.value = 1.2;
+
+            source.connect(biquadFilter);
+            biquadFilter.connect(highShelf);
+            highShelf.connect(masterGain);
+
+            profile.delays.forEach(d => {
+                const delayNode = offlineCtx.createDelay(1.0);
+                delayNode.delayTime.value = d.time;
+                const delayGain = offlineCtx.createGain();
+                delayGain.gain.value = d.gain;
+                
+                highShelf.connect(delayNode);
+                delayNode.connect(delayGain);
+                delayGain.connect(masterGain);
+            });
+
+            masterGain.connect(offlineCtx.destination);
+            source.start(0);
+
+            return await offlineCtx.startRendering();
+        }
+
+        function playAndProvideDownload(renderedBuffer) {
+            initAudioContext();
+            
+            // Generate Download URL
+            if (currentDownloadUrl) URL.revokeObjectURL(currentDownloadUrl);
+            const wavBlob = audioBufferToWav(renderedBuffer);
+            currentDownloadUrl = URL.createObjectURL(wavBlob);
+            
+            downloadLink.href = currentDownloadUrl;
+            const charId = characterSelect.value;
+            downloadLink.download = `${charId}_transmission.wav`;
+            downloadSection.style.display = 'flex';
+
+            // Play Audio
+            const source = audioContext.createBufferSource();
+            source.buffer = renderedBuffer;
+            source.connect(audioContext.destination);
+
+            source.onended = () => {
+                speakBtn.disabled = false;
+                speakBtn.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon><path d="M15.54 8.46a5 5 0 0 1 0 7.07"></path><path d="M19.07 4.93a10 10 0 0 1 0 14.14"></path></svg> Project Thoughts`;
+            };
+
+            source.start(0);
+        }
+
+        // --- Text to Speech Logic ---
+        speakBtn.addEventListener('click', async () => {
+            const text = textInput.value.trim();
+            if (!text) return;
+
+            initAudioContext();
+            
+            const selectedCharId = characterSelect.value;
+            const profile = characterProfiles[selectedCharId];
+
+            speakBtn.disabled = true;
+            loadingIndicator.style.display = 'flex';
+            errorMsg.style.display = 'none';
+            downloadSection.style.display = 'none';
+
+            try {
+                const promptText = `${profile.prompt}${text}`;
+                
+                const payload = {
+                    contents: [{ parts: [{ text: promptText }] }],
+                    generationConfig: {
+                        responseModalities: ["AUDIO"],
+                        speechConfig: {
+                            voiceConfig: {
+                                prebuiltVoiceConfig: { voiceName: profile.voice } 
+                            }
+                        }
+                    },
+                    model: "gemini-2.5-flash-preview-tts"
+                };
+
+                const result = await fetchWithBackoff(ttsUrl, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
+                });
+
+                if (result.candidates && result.candidates[0] && result.candidates[0].content.parts[0].inlineData) {
+                    const inlineData = result.candidates[0].content.parts[0].inlineData;
+                    const base64Audio = inlineData.data;
+                    
+                    const mimeType = inlineData.mimeType || "";
+                    const rateMatch = mimeType.match(/rate=(\d+)/);
+                    const sampleRate = rateMatch ? parseInt(rateMatch[1], 10) : 24000;
+
+                    const floatArray = base64ToFloat32Array(base64Audio);
+                    
+                    speakBtn.innerHTML = `Synthesizing...`;
+                    
+                    // Render Audio Offline to get a single file buffer
+                    const renderedBuffer = await renderProtossAudio(floatArray, sampleRate, profile);
+                    
+                    loadingIndicator.style.display = 'none';
+                    speakBtn.innerHTML = `Projecting...`;
+                    
+                    playAndProvideDownload(renderedBuffer);
+
+                } else {
+                    throw new Error("Invalid response from psychic network.");
+                }
+
+            } catch (err) {
+                console.error(err);
+                loadingIndicator.style.display = 'none';
+                speakBtn.disabled = false;
+                speakBtn.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon><path d="M15.54 8.46a5 5 0 0 1 0 7.07"></path><path d="M19.07 4.93a10 10 0 0 1 0 14.14"></path></svg> Project Thoughts`;
+                errorMsg.textContent = "Connection to the Khala failed: " + err.message;
+                errorMsg.style.display = 'block';
+            }
+        });
+
+        // --- Speech to Text (Voice Dictation) Logic ---
+        // Setup Speech Recognition (WebKit prefixed for Chrome/Safari)
+        const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+        let recognition;
+
+        if (SpeechRecognition) {
+            recognition = new SpeechRecognition();
+            recognition.continuous = false; // Stop after one phrase
+            recognition.interimResults = true; // Show text as you speak
+            recognition.lang = 'en-US';
+
+            recognition.onstart = function() {
+                dictateBtn.classList.add('animate-pulse');
+                dictateBtn.innerHTML = `<span class="loader" style="display:block; width:16px; height:16px; border-width:2px;"></span> Communing...`;
+                textInput.placeholder = "Listening to your thoughts...";
+            };
+
+            recognition.onresult = function(event) {
+                let finalTranscript = '';
+                let interimTranscript = '';
+
+                for (let i = event.resultIndex; i < event.results.length; ++i) {
+                    if (event.results[i].isFinal) {
+                        finalTranscript += event.results[i][0].transcript;
+                    } else {
+                        interimTranscript += event.results[i][0].transcript;
+                    }
+                }
+
+                // Append final text or show interim
+                if (finalTranscript) {
+                    // Capitalize first letter and add period if missing
+                    finalTranscript = finalTranscript.trim();
+                    finalTranscript = finalTranscript.charAt(0).toUpperCase() + finalTranscript.slice(1);
+                    if (!finalTranscript.match(/[.!?]$/)) finalTranscript += '.';
+                    
+                    const currentText = textInput.value;
+                    textInput.value = currentText ? currentText + ' ' + finalTranscript : finalTranscript;
+                }
+            };
+
+            recognition.onerror = function(event) {
+                console.error("Speech recognition error", event.error);
+                resetDictateBtn();
+                errorMsg.textContent = "Failed to hear your thoughts. Ensure microphone access is granted.";
+                errorMsg.style.display = 'block';
+            };
+
+            recognition.onend = function() {
+                resetDictateBtn();
+                textInput.placeholder = "My life for Aiur...";
+            };
+        } else {
+            dictateBtn.disabled = true;
+            dictateBtn.title = "Voice recognition not supported in this browser.";
+        }
+
+        function resetDictateBtn() {
+            dictateBtn.classList.remove('animate-pulse');
+            dictateBtn.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2a3 3 0 0 0-3 3v7a3 3 0 0 0 6 0V5a3 3 0 0 0-3-3z"></path><path d="M19 10v2a7 7 0 0 1-14 0v-2"></path><line x1="12" y1="19" x2="12" y2="22"></line></svg> Commune (Voice to Text)`;
+        }
+
+        dictateBtn.addEventListener('click', () => {
+            if (recognition) {
+                errorMsg.style.display = 'none';
+                try {
+                    recognition.start();
+                } catch (e) {
+                    // Already started
+                    recognition.stop();
+                }
+            }
+        });
+
+    </script>
+</body>
+</html>
